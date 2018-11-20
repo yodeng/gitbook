@@ -1,0 +1,114 @@
+### git使用
+
+1. 安装git
+    设置git: 
+    家目录下创建.gitconfig文件写入如下内容
+    [user]
+            email = XXXXXXXXXX@qq.com
+            name = XXXX
+    表示你这台机器上所有的Git仓库都会默认使用这个配置，当然你也可以对某个仓库指定的不同的用户名和邮箱。
+    也可以 git config --global user.email "XXXXXXXXXX@qq.com"
+           git config --global user.name "XXXXX"
+       实现同样的功能
+       git config --list 列出当前的所有设置
+            其他可以使用git config查看帮助
+       
+2. 本地版本管理
+    ### 创建版本库(本地仓库)
+    git init        在当前工作区创建.git文件夹，
+    ### 添加文件
+        git add ...   后面跟需要添加的文件或文件夹，可以多个一次添加，表示将当前的文件添加到暂存区
+        git commit -m "提交的注释"   将暂存区的修改提交到版本库，美创建一次版本，记录版本和之前版本的一个变化
+                但是图片，视频这些二进制文件，虽能也能由版本控制系统管理，但没法跟踪文件的变化，只能把二进制文件每次改动串起来，也就是知道图片从1kb变成2kb，但是到底改了啥，版本控制也不知道。
+    ### 查看当前工作区中暂未添加到版本库中的内容
+        git status   ## 添加到版本库之后，git status即为干净的
+    ### 查看文件区别 (提交到版本库之后可以查看文件的区别)
+                            文件和上一个文件的区别
+                            文件和版本库中文件的区别
+    ### 查看已提交的版本记录
+        git log --pretty=oneline   ## 可以一行显示
+        git reflog     
+    ### 版本回退
+        git reset --hard HEAD^   ## 回到上一个版本 
+            git reset --hard HEAD~1
+        git reset --hard HEAD^^  ## 回到上上一个版本
+            git reset --hard HEAD~2
+        git reset --hard HEAD~100   ##  回到前100个版本
+        git reset --hard 版本号    ### 回到指定的一个版本
+    ### 撤销修改
+        git reset --hard 版本号     ## 已经提交到版本库中的，直接切换版本库即可
+        git checkout -- 文件        ## 撤销工作区中对文件的修改，文件还未添加到暂存区中时可以用
+        git reset HEAD 文件         ## 撤销提交到缓存区的操作        
+        已经添加到缓存区中的文件，可先撤销缓存，然后撤销工作区的修改
+    ### 删除文件
+        rm test.file; git commit -am "delete test.file"   ### 在工作区直接删除时，提交需要-a参数，若没有，则不会将删除该文件的操作提交上去
+        或者
+        git rm test.file; git commit -m "delete test.file"
+    ### 差异比较 （path表示想比较的文件）
+        git diff 不加参数即默认比较工作区与暂存区的差异
+        git diff --cached  [<path>...]  比较暂存区与最新本地版本库（本地库中最近一次commit的内容）　　　　　
+　　　　git diff HEAD [<path>...]  如果HEAD指向的是master分支，那么HEAD还可以换成master
+        git diff commit-id  [<path>...]      比较工作区与指定commit-id的差异
+        git diff --cached [<commit-id>] [<path>...]  比较暂存区与指定commit-id的差异
+　　　　git diff [<commit-id>] [<commit-id>]     比较两个commit-id之间的差异
+
+3. 远程仓库管理
+    ## 创建公钥，并将~/.ssh/id_rsa.pub公钥添加到远程仓库SSH Keys中
+        ssh-keygen -t rsa –C “youremail@example.com”   生成~/.ssh/id_rsa.pub文件
+    ## 创建一个新的远程仓库
+        1. 在github上创建一个新的仓库，记录好仓库名
+        2. git remote add origin git@github.com:用户名/仓库名   ### 在本地创建远程仓库。
+        3. 将本地仓库(默认master分支)上传到github仓库，实际上就是将本地分支推送到远程的master分支
+            git push -u origin master  ### 远程仓库的默认就是origin，也可指定一个其他的仓库，表示将某个分支上传到某一个仓库中
+             -u 表示将本地的仓库和远程的仓库关联起来，以后push或pull的时候方便
+             此处需要输入远程github的账户和密码
+    ## 克隆远程仓库
+        git clone https://github.com/yodeng/testgit.git -b 分支名   ### 克隆一个远程仓库的某一个分支，不给定-b参数的时候，默认为master分支
+            ### 当你从远程库克隆时候，实际上Git自动把本地的master分支和远程的master分支对应起来了，
+            git remote -v 可以查看当前对应的远程分支库
+ 
+4. 分支管理
+    ## 创建分支
+        git branch 分支名    ## 创建一个分支
+        git branch -b 分支名  ### 创建并切换到一个分支
+    ## 切换分支
+        git checkout 分支名
+    ## 删除分支
+        git branch –d 分支名    ## 删除一个本地分支
+        git push origin --delete 分支名    ### 删除一个远程分支
+    ## 合并分支
+        1. 无冲突，另外分支修改了部分内容，将另外分支的修改合并到当前分支，自动采取快速合并的策略
+            git merge 其他分支
+            可以 添加 --no-ff -m "注释信息"    ### 表示不使用快速合并的方式，将分支合并后作为一次新的版本并提交
+        2. 无冲突，当前分支修改了某个文件，另外分支修改了另一个文件，将另外分支合并到当前分支，默认自动快速合并的策略
+            这种通常不采取快速合并，而是--no-ff -m "注释信息"，将分支作为一次新的版本合并
+        3. 有冲突，当前分支修改了某个文件，另外一个分支也修改了这个文件，不会采取快速合并
+            git merge 其他分支   ## 执行合并之后，需要手动修改冲突的文件，然后进行一次提交 git add file; git commit -m "XXXX"  
+        4. bug分支
+            当工作中，某一个分支出现bug需要立即修改，git stash 将当前分支隐藏起来，修改bug结束之后，使用git stash pop,删除stash的同时，切换到隐藏的分支 
+    ## 上传分支到远程仓库，（、此时需要输入密码）
+        git push origin 分支名      ## 将某个分支推送到远程，远程会多一个以当前分支命名的分支    
+            当推送的分支和仓库中分支有冲突时，上传分支会报错
+            此时需解决冲突，将远程的仓库pull到本地，
+            git pull origin 分支名   ### 会显示冲突的文件， 然后修改冲突的文件，将解决冲突后的文件重新提交的到版本库            
+            git add CONFLICTfile.txt
+            git commit -m "解决冲突"   ### 之后再执行 git push origin 分支名 即可
+            git push origin 分支名            
+        git push 远程仓库 分支名    ## 将某个分支推送到制动的远程仓库，远程会多一个以当前分支命名的分支
+     ## 分支的关联
+        git branch --set-upstream-to 本地分支名 origin远程分支名    ### 将本地分支和远程分支关联之后，上传和下载直接再关联的分支中使用使用git push和git pull即可，无需
+        
+        
+常用的git别名       
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'           
+alias gb='git branch' 
+alias gbd='git branch -d'
+alias gco='git checkout'
+alias gcm='git checkout master'
+alias gcmsg='git commit -m'
+
+    
+    
+
