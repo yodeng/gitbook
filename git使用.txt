@@ -66,6 +66,8 @@
         git clone https://github.com/yodeng/testgit.git -b 分支名   ### 克隆一个远程仓库的某一个分支，不给定-b参数的时候，默认为master分支
             ### 当你从远程库克隆时候，实际上Git自动把本地的master分支和远程的master分支对应起来了，
             git remote -v 可以查看当前对应的远程分支库
+        克隆下来的分支，到本地用git branch查看时只有一个分支，可用git branch -r查看所有的分支，然后
+        git checkout --track origin/某一个分支名   则本地git branch会又有一个分支
  
 4. 分支管理
     ## 创建分支
