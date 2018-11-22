@@ -4,11 +4,11 @@
     设置git: 
     家目录下创建.gitconfig文件写入如下内容
     [user]
-            email = 393548812@qq.com
-            name = yodeng
+            email = XXXXXXXX@qq.com
+            name = XXXX
     表示你这台机器上所有的Git仓库都会默认使用这个配置，当然你也可以对某个仓库指定的不同的用户名和邮箱。
-    也可以 git config --global user.email "393548812@qq.com"
-           git config --global user.name "yodeng"
+    也可以 git config --global user.email "XXXXXXXX@qq.com"
+           git config --global user.name "XXXX"
        实现同样的功能
        git config --list 列出当前的所有设置
             其他可以使用git config查看帮助
