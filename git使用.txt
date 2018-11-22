@@ -27,7 +27,7 @@
                             文件和版本库中文件的区别
     ### 查看已提交的版本记录
         git log --pretty=oneline   ## 可以一行显示
-        git reflog     
+        git reflog        ### 可以查看所有分支的所有操作记录（包括已经被删除的 commit 记录和 reset 的操作）
     ### 版本回退
         git reset --hard HEAD^   ## 回到上一个版本 
             git reset --hard HEAD~1
@@ -75,6 +75,7 @@
     ## 创建分支
         git branch 分支名    ## 创建一个分支
         git branch -b 分支名  ### 创建并切换到一个分支
+        git checkout -b 分支名称 版本  ## 将某一个版本作为一个新的分支，并切换到该分支
     ## 切换分支
         git checkout 分支名
     ## 删除分支
