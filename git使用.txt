@@ -35,6 +35,8 @@
             git reset --hard HEAD~2
         git reset --hard HEAD~100   ##  回到前100个版本
         git reset --hard 版本号    ### 回到指定的一个版本
+    ### 本地和远程的版本一起回退
+        git push origin HEAD --force    ### 远程会丢失某个版本记录，本地git log也会丢失版本记录，但是本地git reflog会存在版本记录，本地仍可回到某个版本       
     ### 撤销修改
         git reset --hard 版本号     ## 已经提交到版本库中的，直接切换版本库即可
         git checkout -- 文件        ## 撤销工作区中对文件的修改，文件还未添加到暂存区中时可以用
@@ -100,7 +102,7 @@
      ## 分支的关联
         git branch --set-upstream-to 本地分支名 origin/远程分支名    ### 将本地分支和远程分支关联之后，上传和下载直接再关联的分支中使用使用git push和git pull即可，无需
      ## 拖取分支（取回远程主机某个分支的更新，再与本地的指定分支合并，它的完整格式稍稍有点复杂。）  
-        git pull 远程主机名 远程分支名:本地分支名 
+        git pull 远程主机名 远程分支名:本地分支名
         
 5. 标签管理
     ## 为某个版本创建本地标签
