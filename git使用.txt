@@ -4,11 +4,11 @@
     设置git: 
     家目录下创建.gitconfig文件写入如下内容
     [user]
-            email = XXXXXXXXXX@qq.com
-            name = XXXX
+            email = 393548812@qq.com
+            name = yodeng
     表示你这台机器上所有的Git仓库都会默认使用这个配置，当然你也可以对某个仓库指定的不同的用户名和邮箱。
-    也可以 git config --global user.email "XXXXXXXXXX@qq.com"
-           git config --global user.name "XXXXX"
+    也可以 git config --global user.email "393548812@qq.com"
+           git config --global user.name "yodeng"
        实现同样的功能
        git config --list 列出当前的所有设置
             其他可以使用git config查看帮助
@@ -45,12 +45,12 @@
         或者
         git rm test.file; git commit -m "delete test.file"
     ### 差异比较 （path表示想比较的文件）
-        git diff                        不加参数即默认比较工作区与暂存区的差异
-        git diff --cached  [<path>...]         比较暂存区与最新本地版本库（本地库中最近一次commit的内容）　　　　　
-　　　　 git diff HEAD [<path>...]        如果HEAD指向的是master分支，那么HEAD还可以换成master
+        git diff 不加参数即默认比较工作区与暂存区的差异
+        git diff --cached  [<path>...]  比较暂存区与最新本地版本库（本地库中最近一次commit的内容）　　　　　
+　　　　git diff HEAD [<path>...]  如果HEAD指向的是master分支，那么HEAD还可以换成master
         git diff commit-id  [<path>...]      比较工作区与指定commit-id的差异
         git diff --cached [<commit-id>] [<path>...]  比较暂存区与指定commit-id的差异
-　　　　 git diff [<commit-id>] [<commit-id>]      比较两个commit-id之间的差异
+　　　　git diff [<commit-id>] [<commit-id>]     比较两个commit-id之间的差异
 
 3. 远程仓库管理
     ## 创建公钥，并将~/.ssh/id_rsa.pub公钥添加到远程仓库SSH Keys中
@@ -60,10 +60,10 @@
         2. git remote add origin git@github.com:用户名/仓库名   ### 在本地创建远程仓库。
         3. 将本地仓库(默认master分支)上传到github仓库，实际上就是将本地分支推送到远程的master分支
             git push -u origin master  ### 远程仓库的默认就是origin，也可指定一个其他的仓库，表示将某个分支上传到某一个仓库中
-             -u 表示将本地的仓库和远程的仓库关联起来，以后push或pull的时候方便
+             -u 后面接远程分支，表示将当前的分支和远程的某个分支关联，以后push或pull的时候方便
              此处需要输入远程github的账户和密码
     ## 克隆远程仓库
-        git clone https://github.com/yodeng/testgit.git -b 分支名   ### 克隆一个远程仓库的某一个分支，不给定-b参数的时候，默认为master分支
+        git clone https://github.com/yodeng/testgit.git -b 分支名   ### 克隆一个远程仓库的某一个分支，不给定-b参数的时候，默认为所有分支
             ### 当你从远程库克隆时候，实际上Git自动把本地的master分支和远程的master分支对应起来了，
             git remote -v 可以查看当前对应的远程分支库
         克隆下来的分支，到本地用git branch查看时只有一个分支，可用git branch -r查看所有的分支，然后
@@ -88,7 +88,7 @@
             git merge 其他分支   ## 执行合并之后，需要手动修改冲突的文件，然后进行一次提交 git add file; git commit -m "XXXX"  
         4. bug分支
             当工作中，某一个分支出现bug需要立即修改，git stash 将当前分支隐藏起来，修改bug结束之后，使用git stash pop,删除stash的同时，切换到隐藏的分支 
-    ## 上传分支到远程仓库，（、此时需要输入密码）
+    ## 上传分支到远程仓库，（此时需要输入密码）
         git push origin 分支名      ## 将某个分支推送到远程，远程会多一个以当前分支命名的分支    
             当推送的分支和仓库中分支有冲突时，上传分支会报错
             此时需解决冲突，将远程的仓库pull到本地，
@@ -98,8 +98,29 @@
             git push origin 分支名            
         git push 远程仓库 分支名    ## 将某个分支推送到制动的远程仓库，远程会多一个以当前分支命名的分支
      ## 分支的关联
-        git branch --set-upstream-to 本地分支名 origin远程分支名    ### 将本地分支和远程分支关联之后，上传和下载直接再关联的分支中使用使用git push和git pull即可，无需
+        git branch --set-upstream-to 本地分支名 origin/远程分支名    ### 将本地分支和远程分支关联之后，上传和下载直接再关联的分支中使用使用git push和git pull即可，无需
+     ## 拖取分支（取回远程主机某个分支的更新，再与本地的指定分支合并，它的完整格式稍稍有点复杂。）  
+        git pull 远程主机名 远程分支名:本地分支名 
         
+5. 标签管理
+    ## 为某个版本创建本地标签
+        git tag -a 标签名 -m "标签信息" HEAD   ## 默认为当前分支的最后一个版本，即HEAD, 若要给其他版本创建标签，则后面添加版本号即可（版本号可以使用git log查看） 
+    ## 删除本地标签
+        git tag -d 标签名
+    ## 查看当前分支的所有标签
+        git tag
+        git tag -l 'v1.4.2.*'
+        git show 标签名   ### 可以查看某个标签的详细信息
+    ## 将标签推送到远程分支
+        git push origin 分支名 标签名  ## 将给远程的分支对应的版本添加标签，若本地分支和远程分支已经关联，可以省略分支名
+    ## 删除远程的标签
+        git tag -d 标签名    ### 标签已推送大远程的情况下，需要先删除本地标签，再删除远程标签
+        git push origin --delete 标签名
+            等同于 git push origin :标签名
+        
+
+        
+    
         
 常用的git别名       
 alias g='git'
