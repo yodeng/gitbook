@@ -1,3 +1,3 @@
 NoteBook
 ===============
-## git使用说明
+## some not or scripts
