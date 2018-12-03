@@ -1,3 +1,3 @@
 NoteBook
 ===============
-## some not or scripts
+## some note or scripts
