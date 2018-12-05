@@ -59,17 +59,17 @@ def main():
                 jobs.setdefault(j.username(),defaultdict(int))[j.status()] += 1
             except:
                 continue                
-        print style("-"*50,mode="bold")
-        print style("{0:<20} {1:>5} {2:>5} {3:>5} {4:>5} {5:>5}".format("user","jobs","R","S","D","Z"),mode="bold")
-        print style("-"*50,mode="bold")
+        print style("-"*52,mode="bold")
+        print style("{0:<20} {1:>7} {2:>5} {3:>5} {4:>5} {5:>5}".format("user","process","R","S","D","Z"),mode="bold")
+        print style("-"*52,mode="bold")
         for u in sorted(jobs.items(),key=lambda x:sum(x[1].values()),reverse=True):
             user = u[0]
             job = sum(u[1].values())
             if user == username:
-                print style("{0:<20} {1:>5} {2:>5} {3:>5} {4:>5} {5:>5}".format(user,job,u[1].get("running",0),u[1].get("sleeping",0),u[1].get("dead",0),u[1].get("zombie",0)),fore="red",mode="bold")
+                print style("{0:<20} {1:>7} {2:>5} {3:>5} {4:>5} {5:>5}".format(user,job,u[1].get("running",0),u[1].get("sleeping",0),u[1].get("dead",0),u[1].get("zombie",0)),fore="red",mode="bold")
             else:
-                print style("{0:<20} {1:>5} {2:>5} {3:>5} {4:>5} {5:>5}".format(user,job,u[1].get("running",0),u[1].get("sleeping",0),u[1].get("dead",0),u[1].get("zombie",0)))
-        print style("-"*50,mode="bold")
+                print style("{0:<20} {1:>7} {2:>5} {3:>5} {4:>5} {5:>5}".format(user,job,u[1].get("running",0),u[1].get("sleeping",0),u[1].get("dead",0),u[1].get("zombie",0)))
+        print style("-"*52,mode="bold")
         
 if __name__ == "__main__":
     main()
