@@ -8,14 +8,13 @@ from subprocess import call,PIPE
 from threading import Thread
 from Queue import Queue
 
-_sge_queue = "baseline.q"
-
 def not_empty(s):
-  return s and s.strip() and (not s.startswith("^#"))
+  return s and s.strip() and (not s.strip().startswith("#"))
 
 def parserArg():
+    pid = os.getpid()
     parser = argparse.ArgumentParser(description= "For qsub your jobs in a job file.")
-    parser.add_argument("-q","--queue",type=str,help="the queue your job running, default: %s"%_sge_queue,default=_sge_queue,metavar="queue")
+    parser.add_argument("-q","--queue",type=str,help="the queue your job running, default: baseline.q",default="baseline.q",metavar="queue")
     parser.add_argument("-m","--memory",type=int,help="the memory used per command (GB), default: 1",default=1,metavar="int")
     parser.add_argument("-c","--cpu",type=int,help="the cpu numbers you job used, default: 1",default=1,metavar="int")
     parser.add_argument("-wd","--workdir",type=str,help="work dir, default: %s"%os.path.abspath(os.getcwd()),default=os.path.abspath(os.getcwd()),metavar="workdir")
@@ -30,8 +29,10 @@ def parserArg():
     if not os.path.isdir(progargs.logdir):
         os.makedirs(progargs.logdir)
     if progargs.jobname is None:
-        pid = os.getpid()
         progargs.jobname = os.path.basename(progargs.jobfile) + "_" + str(pid) if not os.path.basename(progargs.jobfile)[0].isdigit() else "job_" + os.path.basename(progargs.jobfile) + "_" +  str(pid)
+    else:
+        #progargs.jobname += "_" + str(pid)
+        pass
     with open(progargs.jobfile) as fi:
         allcmds = fi.readlines()
     allcmds = filter(not_empty,allcmds)
@@ -43,7 +44,7 @@ def parserArg():
 def qsubCheck(jobname,num,block,sec = 1):
     # pid = os.getpid()
     while flag:
-        time.sleep(sec)   ### check per sec seconds
+        time.sleep(sec)   ### check per 1 seconds
         qs = 0
         # qs = os.popen('qstat | grep %s | wc -l'%jobname[:10]).read().strip()
         qs = os.popen('qstat -xml | grep %s | wc -l'%jobname).read().strip()
@@ -65,7 +66,7 @@ def main():
     with open(jobfile) as fi:
         for n,line in enumerate(fi):
             line = line.strip()
-            if line and not line.startswith("^#"):
+            if line and not line.startswith("#"):
                 logfile = os.path.join(args.logdir,os.path.basename(jobfile)+".line") + str(n+1) +".log"
                 with open(logfile,"w") as logcmd:
                     logcmd.write(line+"\n")
@@ -106,7 +107,7 @@ def main():
                 # jobnums += 1 
     time.sleep(1)
     while True:
-        time.sleep(2)   ### check per 2 seconds            
+        time.sleep(2)   ### check per 1 seconds            
         qs = os.popen('qstat -xml | grep %s | wc -l'%args.jobname).read().strip()
         qs = int(qs)
         if qs == 0:
@@ -118,4 +119,5 @@ def main():
                     
 if __name__ == "__main__":
     main()
+
 
